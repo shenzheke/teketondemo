@@ -10,7 +10,7 @@ spec:
     name: tekton-demo-cicd
   params:
     - name: repo-url
-      value: http://10.0.0.200/root/teketondemo.git
+      value: http://10.0.0.200/gitops/teketondemo.git
     - name: git-revision
       value: main
     - name: image-repo
