@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from typing import Dict
 
 from app.config import settings
 from app.database import Base, engine
@@ -9,24 +11,19 @@ from app.routers.tasks import router as tasks_router
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.app_name, version=settings.app_version)
+
 app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(tasks_router)
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from typing import Dict
-
-app = FastAPI(title="tekton-demo-api", version="1.0.0")
 
 
+# ── Todo (in-memory) ──────────────────────────────────────────────
 class TodoCreate(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     done: bool = False
 
-
 class Todo(TodoCreate):
     id: int
-
 
 class TodoStore:
     def __init__(self) -> None:
@@ -59,10 +56,30 @@ class TodoStore:
             raise HTTPException(status_code=404, detail="todo not found")
         del self._items[item_id]
 
-
 store = TodoStore()
 
 
+# ── Routes ───────────────────────────────────────────────────────
 @app.get("/healthz")
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+@app.get("/todos", response_model=list[Todo])
+def list_todos():
+    return store.list()
+
+@app.post("/todos", response_model=Todo, status_code=201)
+def create_todo(payload: TodoCreate):
+    return store.create(payload)
+
+@app.get("/todos/{todo_id}", response_model=Todo)
+def get_todo(todo_id: int):
+    return store.get(todo_id)
+
+@app.put("/todos/{todo_id}", response_model=Todo)
+def update_todo(todo_id: int, payload: TodoCreate):
+    return store.update(todo_id, payload)
+
+@app.delete("/todos/{todo_id}", status_code=204)
+def delete_todo(todo_id: int):
+    store.delete(todo_id)
