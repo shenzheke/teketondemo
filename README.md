@@ -117,6 +117,7 @@ kubectl apply -f k8s/gitlab-secret.yaml
 ```
 
 检查：
+检查资源：
 
 ```bash
 kubectl get task,pipeline,eventlistener -n cicd
@@ -207,13 +208,13 @@ curl -X POST http://127.0.0.1:18080/projects \
 ## 10. 本地测试
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-dev.txt
-pytest -q
+curl http://127.0.0.1:18080/healthz
+curl -X POST http://127.0.0.1:18080/todos -H 'Content-Type: application/json' -d '{"title":"learn tekton","done":false}'
+curl http://127.0.0.1:18080/todos
 ```
 
 ---
+
 
 ## 11. 后续可继续增强
 
@@ -221,3 +222,9 @@ pytest -q
 - 增加 `Trivy` 镜像安全扫描 Task
 - 增加 `SonarQube` 代码扫描
 - 细分多环境 `dev/stage/prod` 与审批门禁
+uvicorn app.main:app --reload --port 8080
+```
+
+---
+
+
