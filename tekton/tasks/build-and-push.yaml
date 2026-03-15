@@ -20,3 +20,6 @@ spec:
         - --dockerfile=Dockerfile
         - --context=$(workspaces.source.path)/source/$(params.context)
         - --destination=$(params.image)
+        - --insecure
+        - --skip-tls-verify
+        - --insecure-pull
