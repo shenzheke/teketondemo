@@ -75,12 +75,12 @@ Pipeline：`tekton-demo-cicd`
 - 集群已安装：Tekton Pipelines + Tekton Triggers
 - 集群网络可达：
   - `http://10.0.0.200`
-  - `harbor10.0.0.41`
+  - `10.0.0.41`
 
 将代码推到你的 GitLab 仓库，例如：
 
 ```text
-http://10.0.0.200/root/teketondemo.git
+http://10.0.0.200/gitops/teketondemo.git
 ```
 
 ---
@@ -129,7 +129,7 @@ kubectl get application -n argocd
 ## 7. 手动触发一次 CI/CD
 
 ```bash
-kubectl apply -f tekton/pipelines/pipelinerun-manual.yaml
+kubectl create -f tekton/pipelines/pipelinerun-manual.yaml
 kubectl get pipelineruns -n cicd
 ```
 
