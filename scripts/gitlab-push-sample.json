@@ -1,0 +1,6 @@
+{
+  "checkout_sha": "main",
+  "repository": {
+    "git_http_url": "http://10.0.0.200/root/teketondemo.git"
+  }
+}

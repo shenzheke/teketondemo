@@ -1,0 +1,6 @@
+resources:
+  - ../../base
+images:
+  - name: harbor10.0.0.41/library/tekton-demo-api
+    newTag: latest
+namespace: tekton-demo

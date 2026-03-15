@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: git-clone-local
+  namespace: cicd
+spec:
+  params:
+    - name: url
+      type: string
+    - name: revision
+      type: string
+      default: main
+  workspaces:
+    - name: output
+  steps:
+    - name: clone
+      image: alpine/git:2.45.2
+      script: |
+        #!/bin/sh
+        set -eux
+        cd $(workspaces.output.path)
+        rm -rf source
+        git clone $(params.url) source
+        cd source
+        git checkout $(params.revision)
