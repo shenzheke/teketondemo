@@ -16,6 +16,9 @@ spec:
     - name: build
       image: gcr.io/kaniko-project/executor:v1.23.2
       workingDir: $(workspaces.source.path)/source
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
       args:
         - --dockerfile=Dockerfile
         - --context=$(workspaces.source.path)/source/$(params.context)
@@ -23,3 +26,13 @@ spec:
         - --insecure
         - --skip-tls-verify
         - --insecure-pull
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: harbor-auth
+        items:
+          - key: .dockerconfigjson
+            path: config.json
