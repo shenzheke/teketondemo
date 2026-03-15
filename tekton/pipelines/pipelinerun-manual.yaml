@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: tekton-demo-cicd-run-
+  namespace: cicd
+spec:
+  pipelineRef:
+    name: tekton-demo-cicd
+  params:
+    - name: repo-url
+      value: http://10.0.0.200/root/teketondemo.git
+    - name: git-revision
+      value: main
+    - name: image-repo
+      value: harbor10.0.0.41/library/tekton-demo-api
+    - name: image-tag
+      value: manual-001
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi

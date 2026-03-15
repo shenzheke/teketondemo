@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: build-and-push
+  namespace: cicd
+spec:
+  params:
+    - name: image
+      type: string
+    - name: context
+      type: string
+      default: .
+  workspaces:
+    - name: source
+  steps:
+    - name: build
+      image: gcr.io/kaniko-project/executor:v1.23.2
+      workingDir: $(workspaces.source.path)/source
+      args:
+        - --dockerfile=Dockerfile
+        - --context=$(workspaces.source.path)/source/$(params.context)
+        - --destination=$(params.image)

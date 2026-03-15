@@ -1,0 +1,13 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: tekton-demo-listener
+  namespace: cicd
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: gitlab-push
+      bindings:
+        - ref: tekton-demo-binding
+      template:
+        ref: tekton-demo-template

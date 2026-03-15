@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tekton-demo-listener-nodeport
+  namespace: cicd
+spec:
+  type: NodePort
+  selector:
+    eventlistener: tekton-demo-listener
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080

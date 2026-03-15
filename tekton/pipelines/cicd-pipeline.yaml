@@ -1,0 +1,62 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: tekton-demo-cicd
+  namespace: cicd
+spec:
+  params:
+    - name: repo-url
+      type: string
+    - name: git-revision
+      type: string
+      default: main
+    - name: image-repo
+      type: string
+      default: harbor10.0.0.41/library/tekton-demo-api
+    - name: image-tag
+      type: string
+      default: latest
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: clone
+      taskRef:
+        name: git-clone-local
+      params:
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: test
+      runAfter: ["clone"]
+      taskRef:
+        name: python-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: build
+      runAfter: ["test"]
+      taskRef:
+        name: build-and-push
+      params:
+        - name: image
+          value: $(params.image-repo):$(params.image-tag)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: update-gitops
+      runAfter: ["build"]
+      taskRef:
+        name: update-gitops-tag
+      params:
+        - name: image-tag
+          value: $(params.image-tag)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
