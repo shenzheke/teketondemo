@@ -2,5 +2,5 @@ resources:
   - ../../base
 images:
   - name: 10.0.0.41/library/tekton-demo-api
-    newTag: latest
+    newTag: manual-001
 namespace: tekton-demo
