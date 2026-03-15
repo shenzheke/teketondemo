@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-gitops-tag
+  namespace: cicd
+spec:
+  params:
+    - name: image-tag
+      type: string
+    - name: git-user-name
+      type: string
+      default: tekton-bot
+    - name: git-user-email
+      type: string
+      default: tekton-bot@example.com
+  workspaces:
+    - name: source
+  steps:
+    - name: patch-and-commit
+      image: alpine:3.20
+      workingDir: $(workspaces.source.path)/source
+      script: |
+        #!/bin/sh
+        set -eux
+        apk add --no-cache git sed
+        sed -i "s/newTag: .*/newTag: $(params.image-tag)/" gitops/overlays/dev/kustomization.yaml
+
+        git config user.name "$(params.git-user-name)"
+        git config user.email "$(params.git-user-email)"
+        git add gitops/overlays/dev/kustomization.yaml
+        if git diff --staged --quiet; then
+          echo "No GitOps changes to commit"
+          exit 0
+        fi
+        git commit -m "ci: bump image tag to $(params.image-tag)"
+        git push origin HEAD:main

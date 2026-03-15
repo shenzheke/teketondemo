@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: python-test
+  namespace: cicd
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: unit-test
+      image: python:3.11-slim
+      workingDir: $(workspaces.source.path)/source
+      script: |
+        #!/bin/sh
+        set -eux
+        pip install --no-cache-dir -r requirements-dev.txt
+        pytest -q
