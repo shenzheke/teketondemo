@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM 10.0.0.41/library/python:3.11-slim
 
 WORKDIR /app
 COPY requirements.txt ./
