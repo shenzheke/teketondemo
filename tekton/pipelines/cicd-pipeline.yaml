@@ -12,7 +12,7 @@ spec:
       default: main
     - name: image-repo
       type: string
-      default: harbor10.0.0.41/library/tekton-demo-api
+      default: 10.0.0.41/library/tekton-demo-api
     - name: image-tag
       type: string
       default: latest

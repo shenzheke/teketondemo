@@ -13,7 +13,10 @@ spec:
       kind: PipelineRun
       metadata:
         generateName: tekton-demo-triggered-
+        namespace: cicd
       spec:
+        taskRunTemplate:
+          serviceAccountName: pipeline
         pipelineRef:
           name: tekton-demo-cicd
         params:
@@ -22,7 +25,7 @@ spec:
           - name: git-revision
             value: $(tt.params.gitrevision)
           - name: image-repo
-            value: harbor10.0.0.41/library/tekton-demo-api
+            value: 10.0.0.41/library/tekton-demo-api
           - name: image-tag
             value: $(uid)
         workspaces:
@@ -30,6 +33,7 @@ spec:
             volumeClaimTemplate:
               spec:
                 accessModes: ["ReadWriteOnce"]
+                storageClassName: nfs-sc
                 resources:
                   requests:
                     storage: 2Gi

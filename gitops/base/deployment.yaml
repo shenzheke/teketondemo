@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: harbor10.0.0.41/library/tekton-demo-api:latest
+          image: 10.0.0.41/library/tekton-demo-api:latest
           ports:
             - containerPort: 8080
           readinessProbe:
