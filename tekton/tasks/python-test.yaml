@@ -10,6 +10,9 @@ spec:
     - name: unit-test
       image: python:3.11-slim
       workingDir: $(workspaces.source.path)/source
+      env:
+        - name: PYTHONPATH          # ← 加这几行
+          value: $(workspaces.source.path)/source
       script: |
         #!/bin/sh
         set -eux
