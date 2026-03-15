@@ -1,0 +1,35 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: tekton-demo-template
+  namespace: cicd
+spec:
+  params:
+    - name: gitrevision
+      default: main
+    - name: gitrepositoryurl
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: tekton-demo-triggered-
+      spec:
+        pipelineRef:
+          name: tekton-demo-cicd
+        params:
+          - name: repo-url
+            value: $(tt.params.gitrepositoryurl)
+          - name: git-revision
+            value: $(tt.params.gitrevision)
+          - name: image-repo
+            value: harbor10.0.0.41/library/tekton-demo-api
+          - name: image-tag
+            value: $(uid)
+        workspaces:
+          - name: shared-workspace
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 2Gi

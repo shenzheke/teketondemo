@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tekton-demo-api
+  labels:
+    app: tekton-demo-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tekton-demo-api
+  template:
+    metadata:
+      labels:
+        app: tekton-demo-api
+    spec:
+      containers:
+        - name: api
+          image: harbor10.0.0.41/library/tekton-demo-api:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
